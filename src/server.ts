@@ -80,13 +80,14 @@ connection.onCodeAction((params: CodeActionParams) => {
   return quickFixActions;
 });
 
+/**
+ * デフォルトのtextlint設定を取得します。
+ */
 const getDefaultTextlintSettings = () => {
-  const mySettings: { [key: string]: boolean } = {};
-
+  const mySettings: { [key: string]: { enabled: boolean, severity: number } } = {};
   DEFAULT_EXTENSION_RULES.forEach((value) => {
-    mySettings[value.ruleName] = value.enabled;
+    mySettings[value.ruleName] = { enabled: value.enabled, severity: value.severity };
   });
-
   return mySettings;
 };
 
@@ -222,7 +223,7 @@ const validateTextDocument = async (
 
       // エラーのルールが「不自然な濁点」か？
       const isRuleNoNfd = message.ruleId === "japanese/no-nfd";
-      if(isRuleNoNfd) {
+      if (isRuleNoNfd) {
         // ルール「不自然な濁点」は、修正テキストを1文字ずらして生成していると思われるため、エラー開始位置も1文字ずらしたい
         startCharacterDiff = -1;
       }
@@ -245,7 +246,7 @@ const validateTextDocument = async (
       const canAutofixMessage = message.fix ? "🪄 " : "";
       // 診断結果を作成
       const diagnostic: Diagnostic = {
-        severity: toDiagnosticSeverity(message.severity),
+        severity: toDiagnosticSeverity(settings, message.ruleId, message.message, message.severity),
         range: Range.create(startPos, endPos),
         message: canAutofixMessage + text,
         source: APP_NAME,
@@ -280,14 +281,14 @@ const isTarget = (
       const ruleIdSub = rule.ruleId.split("/")[1];
       if (message.includes(`（${ruleIdSub}）`)) {
         // VSCodeの設定に存在しないルールは、デフォルト設定を使用します。
-        bool = settings.textlint[rule.ruleName] ?? rule.enabled;
+        bool = settings.textlint[rule.ruleName]?.enabled ?? rule.enabled;
       }
     } else if (rule.ruleId.includes(targetRuleId)) {
       // 使用するルールのIDとエラーのルールIDが一致する場合
 
       // VSCodeの設定に存在しないルールは、デフォルト設定を使用します。
       // 例: ですます調、jtf-style/1.2.2
-      bool = settings.textlint[rule.ruleName] ?? rule.enabled;
+      bool = settings.textlint[rule.ruleName]?.enabled ?? rule.enabled;
     }
   });
   return bool;
@@ -302,7 +303,25 @@ const resetTextDocument = async (textDocument: TextDocument): Promise<void> => {
   connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
 };
 
-const toDiagnosticSeverity = (severity: number) => {
+const toDiagnosticSeverity = (
+  settings: ITextlintSettings,
+  targetRuleId: string,
+  message: string,
+  default_severity: number,) => {
+    let severity = 0;
+    DEFAULT_EXTENSION_RULES.forEach((rule) => {
+    if (targetRuleId === "prh") {
+      // prhのルールの場合
+      // ruleIdからprh内の細かいルールを取得できないのでmessageに含まれているか取得している
+      const ruleIdSub = rule.ruleId.split("/")[1];
+      if (message.includes(`（${ruleIdSub}）`)) {
+        severity = settings.textlint[rule.ruleName]?.severity
+      }
+    } else if (rule.ruleId.includes(targetRuleId)) {
+      // 使用するルールのIDとエラーのルールIDが一致する場合
+      severity = settings.textlint[rule.ruleName]?.severity
+    }
+    });
   switch (severity) {
     case 0:
       return DiagnosticSeverity.Information;
@@ -361,6 +380,8 @@ interface ITextlintSettings {
   /**
    * textlintの設定
    * trueとなっているルールを適用します。
+   * severityを指定することで、エラーの重要度を変更できます。
+   * 0: 情報, 1: 警告, 2: エラー
    */
-  textlint: { [key: string]: boolean };
+  textlint: { [key: string]: { enabled: boolean, severity: number } };
 }

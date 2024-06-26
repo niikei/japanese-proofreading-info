@@ -8,4 +8,6 @@ export interface DefaultExtensionRuleType {
   enabled: boolean;
   /** package.jsonのconfigurationの名前と同一 */
   ruleName: string;
+  /** ルールの重要度 */
+  severity: number;
 }
