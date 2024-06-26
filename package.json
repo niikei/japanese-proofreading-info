@@ -13,14 +13,14 @@
     "theme": "dark"
   },
   "license": "SEE LICENSE IN LICENSE.txt",
-  "homepage": "https://github.com/ics-creative/project-japanese-proofreading/blob/master/README.md",
+  "homepage": "https://github.com/niikei/japanese-proofreading-info/blob/master/README.md",
   "bugs": {
-    "url": "https://github.com/ics-creative/project-japanese-proofreading/issues",
-    "email": "maya.watanabe@ics-web.jp"
+    "url": "https://github.com/niikei/japanese-proofreading-info/issues",
+    "email": "maitake.x2k@gmail.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ics-creative/project-japanese-proofreading.git"
+    "url": "https://github.com/niikei/japanese-proofreading-info"
   },
   "categories": [
     "Linters",
@@ -37,7 +37,7 @@
   "contributes": {
     "configuration": {
       "type": "object",
-      "title": "テキスト校正くん",
+      "title": "テキスト校正くん with info",
       "properties": {
         "japanese-proofreading.maxNumberOfProblems": {
           "scope": "resource",
