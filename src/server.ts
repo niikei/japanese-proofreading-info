@@ -246,7 +246,7 @@ const validateTextDocument = async (
       const canAutofixMessage = message.fix ? "🪄 " : "";
       // 診断結果を作成
       const diagnostic: Diagnostic = {
-        severity: toDiagnosticSeverity(settings, message.ruleId, message.message, message.severity),
+        severity: toDiagnosticSeverity(settings, message.ruleId, message.message),
         range: Range.create(startPos, endPos),
         message: canAutofixMessage + text,
         source: APP_NAME,
@@ -306,8 +306,7 @@ const resetTextDocument = async (textDocument: TextDocument): Promise<void> => {
 const toDiagnosticSeverity = (
   settings: ITextlintSettings,
   targetRuleId: string,
-  message: string,
-  default_severity: number,) => {
+  message: string,) => {
     let severity = 0;
     DEFAULT_EXTENSION_RULES.forEach((rule) => {
     if (targetRuleId === "prh") {
