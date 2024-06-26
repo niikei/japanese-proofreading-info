@@ -307,8 +307,8 @@ const toDiagnosticSeverity = (
   settings: ITextlintSettings,
   targetRuleId: string,
   message: string,) => {
-    let severity = 0;
-    DEFAULT_EXTENSION_RULES.forEach((rule) => {
+  let severity = 0;
+  DEFAULT_EXTENSION_RULES.forEach((rule) => {
     if (targetRuleId === "prh") {
       // prhのルールの場合
       // ruleIdからprh内の細かいルールを取得できないのでmessageに含まれているか取得している
@@ -320,7 +320,7 @@ const toDiagnosticSeverity = (
       // 使用するルールのIDとエラーのルールIDが一致する場合
       severity = settings.textlint[rule.ruleName]?.severity
     }
-    });
+  });
   switch (severity) {
     case 0:
       return DiagnosticSeverity.Information;
