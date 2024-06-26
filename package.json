@@ -2,7 +2,7 @@
   "name": "japanese-proofreading-info",
   "displayName": "(非公式) テキスト校正くん with info",
   "description": "テキスト校正くんの出力をエラーから情報に変えたものです。",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "niikei",
   "engines": {
     "vscode": "^1.90.0"
