@@ -2,7 +2,7 @@
 
 [テキスト校正くん](https://marketplace.visualstudio.com/items?itemName=ICS.japanese-proofreading)の改良版です。
 
-テキスト校正くんでは、問題のある箇所にエラーが表示されることてしまい、少し煩わしく感じることがありました。そこで、警告や情報の表示に設定できるように改良しました。
+テキスト校正くんでは問題のある箇所がエラーとなるため、少し煩わしく感じることがありました。そこで、エラーを警告や情報の表示に変更できるようにしました。
 
 [/src/rules/rule.ts](src/rules/rule.ts)の `severity` を適宜変更してください。  
 `severity`の値とVS Code上に表示されるメッセージの対応は以下のとおりです。
